@@ -29,6 +29,7 @@
                 )
   :serial       t
   :depends-on   (#| "compiled-ml-matcher" |#
+                 "let-over-lambda"
                  "bordeaux-threads"
                  "cl-ppcre"
                  "ironclad"))

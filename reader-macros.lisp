@@ -70,12 +70,7 @@
     `(perform ,name ,bindings ,@body))
   
   (defun flatten (x)
-    (nlet rec ((x   x)
-               (acc nil))
-      (cond ((null x) acc)
-            ((atom x) (cons x acc))
-            (t (rec (car x) (rec (cdr x) acc))))
-      ))
+    (lol:flatten x))
 
   ;; in ML these are referred to as sections
   ;; these actually correspond to the Dylan operators
