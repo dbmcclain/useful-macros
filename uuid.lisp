@@ -306,11 +306,11 @@ INTERNAL-TIME-UINITS-PER-SECOND which gives the ticks per count for the current 
   (make-instance 'uuid))
 
 
-(defvar *uuid-lock* (mp:make-lock :name "UUID Lock"))
+(defvar *uuid-lock* (bt:make-lock "UUID Lock"))
 
 (defun make-v1-uuid ()
   "Generates a version 1 (time-based) uuid."
-  (mp:with-lock (*uuid-lock*)
+  (bt:with-lock-held (*uuid-lock*)
     (let ((timestamp (get-timestamp)))
       (when (zerop *clock-seq*)
         (setf *clock-seq* (random 10000)))
