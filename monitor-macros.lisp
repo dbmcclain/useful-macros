@@ -48,10 +48,7 @@ the &body of the defining form. See the example of DEFINE-MONITOR which follows.
                  ,@(if doc `(,doc))
                  ,@decls
                  ,@(if pre-lock `(,pre-lock))
-                 (#+:LISPWORKS mp:with-lock
-                  #+:ALLEGRO   mp:with-process-lock
-		  #+:CLOZURE   mp:with-lock-grabbed
-		  #+:SBCL      sb-thread:with-recursive-lock
+                 (bt:with-lock-held
                     (,name)
                     ,@body-list))
                  )))
@@ -78,32 +75,21 @@ the &body of the defining form. See the example of DEFINE-MONITOR which follows.
 		 #+:SBCL    progn
      (progn
        (defvar ,name
-         #+:LISPWORKS (mp:make-lock)
-         #+:ALLEGRO   (mp:make-process-lock)
-	 #+:CLOZURE   (mp:make-lock)
-	 #+:SBCL      (sb-thread:make-mutex))
+          (bt:make-lock))
        (with-monitor ,name ,bindings ,clauses :pre-lock ,pre-lock))))
 
 
 (defmacro let-monitor (bindings clauses &key pre-lock)
   (let ((glock (gensym)))
-    `(let ((,glock #+:LISPWORKS (mp:make-lock)
-                   #+:ALLEGRO   (mp:make-process-lock)
-		   #+:CLOZURE   (mp:make-lock)
-		   #+:SBCL      (sb-thread:make-mutex)
-		   ))
-       (with-monitor ,glock ,bindings ,clauses :pre-lock ,pre-lock))
-    ))
+    `(let ((,glock  (bt:make-lock)))
+       (with-monitor ,glock ,bindings ,clauses :pre-lock ,pre-lock))))
 
 ;; ----------------------------------------------
 #|
 (defclass lock-mixin ()
   ((lock-mixin-lock :reader lock-mixin-lock
 		    :initform
-		    #+:LISWORKS (mp:make-lock)
-		    #+:ALLEGRO  (mp:make-process-lock)
-		    #+:CLOZURE  (mp:make-lock)
-		    #+:SBCL     (sb-thread:make-mutex)
+		     (bt:make-lock)
 		    )))
 
 (defmacro let-locking (clauses &key pre-lock)
@@ -114,10 +100,7 @@ the &body of the defining form. See the example of DEFINE-MONITOR which follows.
                  ,@(if doc `(,doc))
                  ,@decls
                  ,@(if pre-lock `(,pre-lock))
-                 (#+:LISPWORKS mp:with-lock
-                  #+:ALLEGRO   mp:with-process-lock
-		  #+:CLOZURE   mp:with-lock-grabbed
-		  #+:SBCL      sb-thread:with-recursive-lock
+                  (bt:with-lock-held
                   ((lock-mixin-lock ,(if (consp lockable-arg) ;; as from a qualified method arg
                                          (first lockable-arg)
                                        lockable-arg)))

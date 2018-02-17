@@ -4,12 +4,10 @@
   :version     "1.0"
   :author      "D.McClain <dbm@spectrodynamics.com>"
   :license     "Copyright (c) 2008 by SpectroDynamics, LLC. All rights reserved."
-  :components  (#+:CLOZURE (:file "clozure-compat")
-  	        #+:SBCL    (:file "sbcl-compat")
-                (:file "packages")
-                (:file "package-aliases")
+  :components  ((:file "packages")
+                #+LISPWORKS (:file "package-aliases")
                 (:file "reader-macros")
-                #+:LISPWORKS (:file "ctypes")
+                #+LISPWORKS (:file "ctypes")
                 (:file "useful-macros")
                 (:file "remembered-filenames")
                 ;; (:file "useful-macros-old")
@@ -31,6 +29,7 @@
                 )
   :serial       t
   :depends-on   (#| "compiled-ml-matcher" |#
+                 "bordeaux-threads"
                  "cl-ppcre"
                  "ironclad"))
 

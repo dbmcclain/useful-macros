@@ -791,7 +791,7 @@
 (if-let* ((a ea) (b eb)) tc)
 |#
 
-#|
+ 
 ;; -------------------------------------------------------
 ;; Define our own collector objects that
 ;; perform rapid nconc list accumulation
@@ -804,7 +804,7 @@
    (lock :accessor collector-lock)))
 
 (defmacro with-locked-collector ((c &rest lock-args) &body body)
-  `(mp:with-lock ((collector-lock ,c) ,@lock-args)
+  `(bt:with-lock-held ((collector-lock ,c) ,@lock-args)
      ,@body))
 
 (defun collector-discard-contents (c)
@@ -815,7 +815,7 @@
       )))
 
 (defmethod initialize-instance ((c <collector>) &key &allow-other-keys)
-  (setf (collector-lock c) (mp:make-lock :name "Collector Lock"))
+  (setf (collector-lock c) (bt:make-lock "Collector Lock"))
   (collector-discard-contents c))
 
 (defun collector-contents (c &key (discard t))
@@ -864,7 +864,7 @@
 
 (defun make-collector ()
   (make-instance '<collector>))
-|#
+  
 
 ;; ---------------------------------------------------------------------
 #+:lispworks
