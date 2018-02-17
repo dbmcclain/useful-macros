@@ -23,7 +23,7 @@
                 (:file "engfmt")
 		(:file "usec")
                	(:file "uuid")
-                (:file "computed-metaclass")
+                #+LISPWORKS (:file "computed-metaclass")
                 #+(AND :LISPWORKS :MACOSX) (:file "OSX-UUID-Generate")
                 #+(AND :ALLEGRO :MACOSX)   (:file "OSX-UUID-Generate-Allegro")
                 )
